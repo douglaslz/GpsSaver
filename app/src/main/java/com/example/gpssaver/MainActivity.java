@@ -6,24 +6,34 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
+
+
 
     LocationManager locationManager;
     Location location;
     double longitudeGPS =0.0, latitudeGPS= 0.0;
     TextView longitudeValueGPS, latitudeValueGPS;
-
+    DatabaseHelper myDb;
+    Button btnViewAll;
+    ArrayList<String> listItem;
+    ArrayAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,12 +43,20 @@ public class MainActivity extends AppCompatActivity {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         latitudeValueGPS = (TextView) findViewById(R.id.latitud);
         longitudeValueGPS = (TextView) findViewById(R.id.longitud);
+        btnViewAll = (Button) findViewById(R.id.btnShowPoints);
+
+        myDb = new DatabaseHelper(this);
+
+
+    }
+
+    public void getPoint(View view){
 
 
         //Check permission
         if(ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
-                    !=PackageManager.PERMISSION_GRANTED){
+                !=PackageManager.PERMISSION_GRANTED){
 
         }else{
             locationManager = (LocationManager)
@@ -54,6 +72,33 @@ public class MainActivity extends AppCompatActivity {
             longitudeValueGPS.setText(""+longitudeGPS);
         }
 
+
     }
+
+
+    public void openSave(View view){
+        startActivity(new Intent(MainActivity.this, SaveActivity.class));
+    }
+
+
+    public void viewAll(View view)
+    {
+
+        startActivity(new Intent(MainActivity.this, activity_showlist.class));
+
+
+    }
+
+
+    public void showMessage(String title, String message)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setCancelable(true);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.show();
+    }
+
+
 
 }
